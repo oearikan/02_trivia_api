@@ -1,4 +1,4 @@
-# Backend - Full Stack Trivia API 
+# Backend - Full Stack Trivia API
 
 ### Installing Dependencies for the Backend
 
@@ -18,9 +18,9 @@ This will install all of the required packages we selected within the `requireme
 4. **Key Dependencies**
  - [Flask](http://flask.pocoo.org/)  is a lightweight backend microservices framework. Flask is required to handle requests and responses.
 
- - [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we'll use handle the lightweight sqlite database. You'll primarily work in app.py and can reference models.py. 
+ - [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we'll use handle the lightweight sqlite database. You'll primarily work in app.py and can reference models.py.
 
- - [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross origin requests from our frontend server. 
+ - [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross origin requests from our frontend server.
 
 ### Database Setup
 With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
@@ -47,39 +47,39 @@ These are the files you'd want to edit in the backend:
 2. *./backend/test_flaskr.py*
 
 
-One note before you delve into your tasks: for each endpoint, you are expected to define the endpoint and response data. The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already. You should feel free to specify endpoints in your own way; if you do so, make sure to update the frontend or you will get some unexpected behavior. 
+One note before you delve into your tasks: for each endpoint, you are expected to define the endpoint and response data. The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already. You should feel free to specify endpoints in your own way; if you do so, make sure to update the frontend or you will get some unexpected behavior.
 
-1. Use Flask-CORS to enable cross-domain requests and set response headers. 
-
-
-2. Create an endpoint to handle GET requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories. 
+1. Use Flask-CORS to enable cross-domain requests and set response headers.
 
 
-3. Create an endpoint to handle GET requests for all available categories. 
+2. Create an endpoint to handle GET requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories.
 
 
-4. Create an endpoint to DELETE question using a question ID. 
+3. Create an endpoint to handle GET requests for all available categories.
 
 
-5. Create an endpoint to POST a new question, which will require the question and answer text, category, and difficulty score. 
+4. Create an endpoint to DELETE question using a question ID.
 
 
-6. Create a POST endpoint to get questions based on category. 
+5. Create an endpoint to POST a new question, which will require the question and answer text, category, and difficulty score.
 
 
-7. Create a POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question. 
+6. Create a POST endpoint to get questions based on category.
 
 
-8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
+7. Create a POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question.
 
 
-9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
+8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
+
+
+9. Create error handlers for all expected errors including 400, 404, 422 and 500.
 
 
 
 ## Review Comment to the Students
 ```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
+This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code.
 
 Endpoints
 GET '/api/v1.0/categories'
@@ -90,7 +90,7 @@ DELETE ...
 GET '/api/v1.0/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
+- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs.
 {'1' : "Science",
 '2' : "Art",
 '3' : "Geography",
@@ -116,13 +116,13 @@ python test_flaskr.py
 - **General:** Fetches a dictionary of categories in which the keys are the ids and the values are the corresponding strings of the categories
 - **Request arguments:** None
 - **Returns:** An object with all available categories as a single dictionary item with id-type string as key-value pairs.
-- **Sample request & response:** 
+- **Sample request & response:**
     - curl -X GET http://127.0.0.1:5000/categories
     - {
-  "categories": {     
-    "1": "Science",   
-    "2": "Art",       
-    "3": "Geography", 
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
     "4": "History",
     "5": "Entertainment",
     "6": "Sports"
@@ -130,7 +130,7 @@ python test_flaskr.py
 }
 
 ### GET 'api/v1.0/questions?page=${int}'
-- **General:** Fetches a paginated list of all questions (4 questions per page). 
+- **General:** Fetches a paginated list of all questions (4 questions per page).
 - **Request arguments:** Page number can be given as an optional argument. If none is given 1st page is returned by default.
 - **Returns:** An object that includes categories, current category, the questions list including the question, the answer to the question, the category, the id and the difficulty as well as a success message and total number of questions.
 - **Sample request & response:**
@@ -231,7 +231,7 @@ python test_flaskr.py
   "success": true
 }
 
-### POST 'api/v1.0/questions' => Add new question
+### POST 'api/v1.0/questions'
 - **General:** Sends a post request in order to add a new question.
 - **Request arguments:** A request body formatted as follows:
     - {
@@ -248,12 +248,12 @@ python test_flaskr.py
     "difficulty": 1,
     "category": 3
 }' http://127.0.0.1:5000/questions
-    
+
     - {
   "success": true
 }
 
-### POST 'api/v1.0/questions' => Search for a question
+### POST 'api/v1.0/questions/search'
 - **General:** Sends a post request in order to search for a specific question by search term in a case insensitive fashion. Note that this is the same end point to post new questions. The structure of the request arguments determines the response type.
 - **Request arguments:** For search operation in this endpoint, a request body structured as follows can be used:
 {
@@ -303,3 +303,35 @@ python test_flaskr.py
     "question": "How many paintings did Van Gogh sell in his lifetime?"
   }
 }
+
+## Errors
+### 400 - Bad request
+- {
+          "success": False,
+          "error": 400,
+          "message": "bad request"
+        }
+### 404 - Resource not found
+- {
+          "success": False,
+          "error": 404,
+          "message": "resource not found"
+        }
+### 422 - Not processable
+- {
+          "success": False,
+          "error": 422,
+          "message": "unprocessable"
+        }
+### 405 - Disallowed method
+- {
+          "success": False,
+          "error": 405,
+          "message": "method not allowed"
+        }
+### 500 - Internal server error
+- {
+          "success": False,
+          "error": 500,
+          "message": "something went wrong on the server"
+        }

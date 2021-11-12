@@ -2,9 +2,10 @@ import os
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
-
+from mylog import mylog
 from flaskr import create_app
 from models import setup_db, Question, Category
+from dotenv import load_dotenv
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -14,8 +15,13 @@ class TriviaTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "trivia_test"
-        self.database_path = "postgres://{}:{}@{}/{}".format('postgres','sa','localhost:5432', self.database_name)
+        self.database_name = os.environ.get("TEST_DB_NAME")
+        self.host = os.environ.get("DB_HOST")
+        self.user = os.environ.get("DB_USER")
+        self.pw = os.environ.get("DB_PW")
+        self.database_path = "postgres://{}:{}@{}/{}".format(
+            self.user, self.pw, self.host, self.database_name
+        )
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -24,23 +30,24 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-    
+
     def tearDown(self):
         """Executed after reach test"""
         pass
 
     """
     TODO
-    Write at least one test for each test for successful operation and for expected errors.
+    Write at least one test for each test for successful operation and for
+    expected errors.
     """
-    
+
     def test_get_categories(self):
         resp = self.client().get("/categories")
         data = json.loads(resp.data)
 
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(data["categories"])
-    
+
     def test_get_questions(self):
         resp = self.client().get("/questions")
         data = json.loads(resp.data)
@@ -59,19 +66,34 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "resource not found")
 
-    # def test_delete_question(self):
-    #     resp = self.client().delete("/questions/29")
-    #     data = json.loads(resp.data)
+    def test_delete_question(self):
+        test_q = Question(
+            question="Test_q",
+            answer="Another test",
+            difficulty=1,
+            category="3"
+        )
+        test_q.insert()
+        question = Question.query.filter(
+            Question.question == "Test_q"
+        ).first_or_404()
 
-    #     question = Question.query.filter(Question.id == 29).one_or_none()
+        resp = self.client().delete("/questions/" + str(question.id))
+        data = json.loads(resp.data)
 
-    #     self.assertEqual(resp.status_code, 200)
-    #     self.assertEqual(data["success"], True)
-    #     self.assertEqual(data["deleted"], 29)
-    #     self.assertEqual(question, None)
+        question_d = Question.query.filter(
+            Question.id == question.id
+        ).one_or_none()
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertEqual(data["deleted"], question.id)
+        self.assertEqual(question_d, None)
 
     def test_search_questions_with_results(self):
-        resp = self.client().post("/questions", json={"searchTerm": "who"})
+        resp = self.client().post(
+            "/questions/search", json={"searchTerm": "who"}
+        )
         data = json.loads(resp.data)
 
         self.assertEqual(resp.status_code, 200)
@@ -80,7 +102,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["total_hits"], 2)
 
     def test_search_questions_without_results(self):
-        resp = self.client().post("/questions", json={"searchTerm": "somegibberish"})
+        resp = self.client().post(
+            "/questions/search", json={"searchTerm": "somegibberish"}
+        )
         data = json.loads(resp.data)
 
         self.assertEqual(resp.status_code, 200)
@@ -103,24 +127,24 @@ class TriviaTestCase(unittest.TestCase):
     def test_get_questions_by_category(self):
         resp = self.client().get("/categories/2/questions")
         data = json.loads(resp.data)
-        
+
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(data["questions"])
         self.assertNotEqual(data["total_questions"], 0)
         self.assertEqual(data["current_category"], "Art")
-    
+
     def test_404_on_get_questions_by_category(self):
         resp = self.client().get("/categories/500/questions")
         data = json.loads(resp.data)
-        
+
         self.assertEqual(resp.status_code, 404)
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "resource not found")
-    
+
     def test_playing_quiz(self):
         resp = self.client().post("/quizzes", json={
-            "previous_questions":[1,2,14,15],
-            "quiz_category":{"id":2, "type":"Art"}
+            "previous_questions": [1, 2, 14, 15],
+            "quiz_category": {"id": 2, "type": "Art"}
         })
         data = json.loads(resp.data)
 
@@ -129,8 +153,8 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_playing_quiz(self):
         resp = self.client().post("/quizzes", json={
-            "previous_questions":[1,2,14,15],
-            "quiz_category":{"id":2, "type":"Art"}
+            "previous_questions": [1, 2, 14, 15],
+            "quiz_category": {"id": 2, "type": "Art"}
         })
         data = json.loads(resp.data)
 
@@ -139,14 +163,15 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_422_playing_quiz(self):
         resp = self.client().post("/quizzes", json={
-            "previous_questions":[],
-            "quiz_category":{}
+            "previous_questions": [],
+            "quiz_category": {}
         })
         data = json.loads(resp.data)
 
         self.assertEqual(resp.status_code, 422)
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "unprocessable")
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
